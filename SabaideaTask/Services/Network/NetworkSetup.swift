@@ -19,6 +19,7 @@ enum HTTPMethod: String {
 }
 
 
+// MARK: - network setup
 struct NetworkSetup {
     var route: String
     var params: [String: String]?

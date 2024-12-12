@@ -4,6 +4,7 @@
 //
 //  Created by Erfan mac mini on 12/11/24.
 //
+import Foundation
 
 func delayWithSeconds(_ seconds: Double, completion: @escaping () -> Void) {
     DispatchQueue.main.asyncAfter(deadline: .now() + seconds) {

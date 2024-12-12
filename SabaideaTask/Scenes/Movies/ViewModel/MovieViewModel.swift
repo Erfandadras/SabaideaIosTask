@@ -17,8 +17,8 @@ final class MovieViewModel: BaseViewModel {
     
     
     override func fetchData() {
-        Task {
-            let data = await dataSource.fetchData()
-        }
+//        Task {
+//            let data = await dataSource.fetchData()
+//        }
     }
 }

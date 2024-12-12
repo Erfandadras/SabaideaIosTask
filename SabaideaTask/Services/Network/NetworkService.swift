@@ -9,7 +9,8 @@ import Foundation
 
 final class NetworkService: NSObject {}
 
-
+/// we can also use Alamofire for making requests
+/// add other functions here -> Upload
 // MARK: - use mapper with Generic model confirms DataParser
 extension NetworkService {
     static func fetch<parser: DataParser>(parser dump: parser, setup: NetworkSetup) async throws -> parser.T {

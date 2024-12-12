@@ -4,6 +4,7 @@
 //
 //  Created by Erfan mac mini on 12/9/24.
 //
+import Foundation
 
 struct PaginateMoviesResponseModel: Codable {
     // MARK: - properties
@@ -31,6 +32,8 @@ struct MoviesResponseModel: Codable {
     let title: String
     let overview: String
     let voteAverage: Double
+    let imagePath: String?
+    let date: String
     
     // MARK: - keys
     enum CodingKeys: String, CodingKey {
@@ -38,14 +41,18 @@ struct MoviesResponseModel: Codable {
         case title
         case overview
         case voteAverage
+        case imagePath = "poster_path"
+        case date = "release_date"
     }
     
     // MARK: - normal init
-    init(id: Int, title: String, overview: String, voteAverage: Double) {
+    init(id: Int, title: String, overview: String, voteAverage: Double, imagePath: String?, date: String?) {
         self.id = id
         self.title = title
         self.overview = overview
         self.voteAverage = voteAverage
+        self.imagePath = imagePath
+        self.date = date ?? "unknown"
     }
     
     
@@ -56,6 +63,8 @@ struct MoviesResponseModel: Codable {
         title = (try? container?.decode(String.self, forKey: .title)) ?? "unknown"
         overview = (try? container?.decode(String.self, forKey: .overview)) ?? "unknown"
         voteAverage = (try? container?.decode(Double.self, forKey: .voteAverage)) ?? 0.0
+        imagePath = (try? container?.decode(String.self, forKey: .imagePath)) ?? "unknown"
+        date = (try? container?.decode(String.self, forKey: .date)) ?? "unknown"
     }
 }
 
