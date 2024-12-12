@@ -29,7 +29,10 @@ final class MovieViewModel: BaseViewModel {
     }
     
     // MARK: - override functions
-    override func fetchData() {
+    func fetchData(refresh: Bool = false) {
+        mainThread {
+            self.state = refresh ? .refresh : .loading
+        }
         Task {
             do {
                 let data = try await dataSource.fetchData()

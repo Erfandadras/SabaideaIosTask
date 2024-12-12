@@ -1,37 +1,32 @@
 //
-//  MoviesUIModel.swift
+//  MovieDetailUIModel.swift
 //  SabaideaTask
 //
-//  Created by Erfan mac mini on 12/11/24.
+//  Created by Erfan mac mini on 12/12/24.
 //
 
-import SwiftUI
+import Foundation
 
-struct MoviesUIModel: Identifiable {
-    // MARK: - properties
+struct MovieDetailUIModel {
     let id: Int
     let title: String
     let detail: String
-    let voteAverage: Double
     let imageUrl: URL?
     let date: String
     
-    // MARK: - init
-    init(id: Int, title: String, detail: String, voteAverage: Double, imageUrl: URL?, date: String?) {
+    init(id: Int, title: String, overview: String, imageUrl: URL?, date: String) {
         self.id = id
         self.title = title
-        self.detail = detail
-        self.voteAverage = voteAverage
+        self.detail = overview
         self.imageUrl = imageUrl
-        self.date = date ?? ""
+        self.date = date
     }
     
-    // MARK: - init with row data
-    init(with data: MoviesResponseModel) {
+    
+    init(with data: MovieDetailResponseModel) {
         self.id = data.id
         self.title = data.title
         self.detail = data.overview
-        self.voteAverage = data.voteAverage
         self.date = data.date
         if let imagePath = data.imagePath {
             self.imageUrl = URL(string: API.mediaBaseURL + imagePath)

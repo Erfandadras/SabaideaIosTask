@@ -41,7 +41,3 @@ struct MovieListItemView: View {
         .padding()
     }
 }
-
-#Preview {
-    MovieListItemView(data: MockData.moveItemUIModel)
-}

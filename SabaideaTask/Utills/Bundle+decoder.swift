@@ -17,8 +17,6 @@ extension Bundle {
             throw CustomError(description: "Failed to load \(file) from bundle.")
         }
 
-        let decoder = JSONDecoder()
-
         return try data.decode()
     }
 }

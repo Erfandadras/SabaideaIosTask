@@ -14,29 +14,24 @@ enum ViewModelState: Equatable {
         case (.noData, .noData): return true
         case (.success, .success): return true
         case (.failure, .failure): return true
+        case (.refresh, .refresh): return true
         default: return false
         }
     }
-    
+    case refresh
     case loading
     case noData
     case success
     case failure(error: Error)
 }
 
-protocol BaseViewModelProtocol {
-    func fetchData()
-}
+protocol BaseViewModelProtocol {}
 
 class BaseViewModel: BaseViewModelProtocol, ObservableObject {
     // MARK: - properties
     @Published var state: ViewModelState = .loading
     var bag: Set<AnyCancellable> = []
     
-    // MARK: - logics
-    func fetchData() {
-        fatalError("function must be override")
-    }
 }
 
 extension BaseViewModel: ErrorDataSourceDelegate {

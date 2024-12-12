@@ -16,12 +16,14 @@ final class MoviesDatasource: MoviesDatasourceRepo {
     private var page: Int = 1
     private var uiModels: [MoviesUIModel] = []
     private var result: PaginateMoviesResponseModel?
-    private var language: String = "en-US"
+    private let userManager = UserManager.shared
+    private var language: String
     var keyword: String?
     let network: NetworkClientImpl<MoviesNetworkClient>
     // MARK: - init
     init(network: NetworkClientImpl<MoviesNetworkClient>) {
         self.network = network
+        self.language = userManager.language
     }
 }
 

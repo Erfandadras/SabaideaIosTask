@@ -16,7 +16,7 @@ class MoviesNetworkClient: NetworkClient {
 }
 
 // MARK: - mock CreditCardsNetworkClient
-final class MOckMoviesNetworkClient: MoviesNetworkClient {
+final class MockMoviesNetworkClient: MoviesNetworkClient {
     override func fetch(setup: NetworkSetup) async throws -> PaginateMoviesResponseModel {
         return try await withCheckedThrowingContinuation { continuation in
             do {

@@ -22,7 +22,7 @@ public struct ImageViewBuilder: View {
                 .scaledToFit()
                 .foregroundColor(.gray)
         }// Web Image -> banner
-//        .resizable()
+        .resizable()
         .indicator(.activity) // Activity Indicator
         .transition(.fade(duration: 0.5)) // Fade Transition
 //        .scaledToFill()

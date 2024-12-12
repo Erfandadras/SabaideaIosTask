@@ -16,7 +16,7 @@ struct MovieListView: View {
     init() {
         let client: NetworkClientImpl<MoviesNetworkClient>
 #if DEBUG
-        client = .init(client: MOckMoviesNetworkClient())
+        client = .init(client: MockMoviesNetworkClient())
 #else
         client = .init(client: MoviesNetworkClient())
 #endif
@@ -24,47 +24,45 @@ struct MovieListView: View {
     }
     // MARK: - view
     var body: some View {
-        NavigationView {
-            VStack {
-                if case .failure(let error) = viewModel.state {
-                    Text(error.localizedDescription)
-                        .foregroundStyle(.white)
-                        .frame(maxWidth: .infinity)
-                        .padding(12)
-                        .background(.red)
-                        .padding(.top, 1)
-                }
+        NavigationStack {
+            ScrollViewReader { reader in
                 ScrollView {
+                    if case .failure(let error) = viewModel.state {
+                        Text(error.localizedDescription)
+                            .foregroundStyle(.white)
+                            .frame(maxWidth: .infinity)
+                            .padding(12)
+                            .background(.red)
+                            .padding(.top, 1)
+                    } else if viewModel.state == .loading {
+                        ProgressView()
+                            .progressViewStyle(CircularProgressViewStyle())
+                    }
                     LazyVStack {
                         ForEach(viewModel.uiModels) { item in
                             NavigationLink {
-                                VStack {
-                                    Text(item.title)
-                                }
-                                //                            NavigationLazyView(MovieListItemView(data: item))
+                                NavigationLazyView(MovieDetailView(previewItem: item))
                             } label: {
-                                NavigationLazyView(MovieListItemView(data: item))
+                                MovieListItemView(data: item)
+                                    .background(.white)
                             }
                             .buttonStyle(PlainButtonStyle())
+                            .id(item.id)
                         }
                     }
                 }// scrollView
                 .refreshable {
-                    viewModel.fetchData()
+                    viewModel.fetchData(refresh: true)
                 }
+                .navigationTitle("Home")
+                .navigationBarTitleDisplayMode(.automatic)
+                .background(.white)
             }
-            .navigationTitle("Home")
-            .animation(.linear, value: focused)
         }// navigation view
         .searchable(text: $viewModel.keyword, placement: .navigationBarDrawer, prompt: Text("Search"))
-        .focused($focused)
         .background(.white)
         .onTapGesture {
             hideKeyboard()
         }
     }
-}
-//
-#Preview {
-    MovieListView()
 }

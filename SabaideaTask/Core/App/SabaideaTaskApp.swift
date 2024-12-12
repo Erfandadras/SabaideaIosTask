@@ -9,9 +9,14 @@ import SwiftUI
 
 @main
 struct SabaideaTaskApp: App {
+    @ObservedObject var appState = AppState()
+    
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            MovieListView()
+                .preferredColorScheme(.light)
+                .environmentObject(appState)
+                .environment(\.layoutDirection, appState.isRTL ? .rightToLeft : .leftToRight)
         }
     }
 }

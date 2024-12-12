@@ -8,7 +8,16 @@
 import SwiftUI
 import Combine
 
-
 class AppState: ObservableObject {
-    @Published var isRTL = true
+    private let userManager = UserManager.shared
+    @Published var isRTL = false
+    var bag = Set<AnyCancellable>()
+    
+    init() {
+        isRTL = userManager.language == "fa"
+        $isRTL.dropFirst().sink { [weak self] value in
+            guard let self else { return }
+            self.userManager.language = value ? "fa" : "en_US"
+        }.store(in: &bag)
+    }
 }

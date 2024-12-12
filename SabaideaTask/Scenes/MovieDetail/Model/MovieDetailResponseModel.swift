@@ -1,40 +1,12 @@
 //
-//  MoviesResponseModel.swift
+//  MovieDetailResponseModel.swift
 //  SabaideaTask
 //
-//  Created by Erfan mac mini on 12/9/24.
+//  Created by Erfan mac mini on 12/12/24.
 //
-import Foundation
-
-struct PaginateMoviesResponseModel: Codable {
-    // MARK: - properties
-    let page: Int?
-    var results: [MoviesResponseModel]
-    private let totalPages: Int?
-    private let totalResults: Int?
-    
-    // variable
-    var hasMoreData: Bool { page != totalPages }
-    
-    // MARK: - keys
-    enum CodingKeys: String, CodingKey {
-        case page = "page"
-        case results = "results"
-        case totalPages = "total_pages"
-        case totalResults = "total_results"
-    }
-    
-    init(from decoder: any Decoder) throws {
-        let container = try decoder.container(keyedBy: CodingKeys.self)
-        self.page = try container.decodeIfPresent(Int.self, forKey: .page)
-        self.results = try container.decode([MoviesResponseModel].self, forKey: .results)
-        self.totalPages = try container.decodeIfPresent(Int.self, forKey: .totalPages)
-        self.totalResults = try container.decodeIfPresent(Int.self, forKey: .totalResults)
-    }
-}
 
 
-struct MoviesResponseModel: Codable {
+struct MovieDetailResponseModel: Codable {
     // MARK: - properties
     let id: Int
     let title: String
@@ -75,12 +47,5 @@ struct MoviesResponseModel: Codable {
         date = try container.decodeIfPresent(String.self, forKey: .date) ?? "unknown"
 
     }
-    
-    /// add what ever you want to filter data
-    func filter(with keyword: String) -> Bool {
-        let keywordLower = keyword.lowercased()
-        return title.lowercased().contains(keywordLower)
-    }
-
 }
 
