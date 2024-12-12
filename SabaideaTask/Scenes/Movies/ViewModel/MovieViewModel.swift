@@ -30,20 +30,16 @@ final class MovieViewModel: BaseViewModel {
     
     // MARK: - override functions
     func fetchData(refresh: Bool = false) {
-        mainThread {
-            self.state = refresh ? .refresh : .loading
-        }
+        self.updateState(state: refresh ? .refresh : .loading)
         Task {
             do {
                 let data = try await dataSource.fetchData()
+                self.updateState(state: data.isEmpty ? .noData : .success)
                 mainThread {
-                    self.state = data.isEmpty ? .noData : .success
                     self.uiModels = data
                 }
             } catch {
-                mainThread {
-                    self.state = .failure(error: error)
-                }
+                self.updateState(state: .failure(error: error))
             }
         }
     }
@@ -52,9 +48,10 @@ final class MovieViewModel: BaseViewModel {
 extension MovieViewModel{
     private func bindSearchText() {
         $keyword
-            .debounce(for: .milliseconds(500), scheduler: DispatchQueue.global()) // Debounce for 500ms
+            .debounce(for: .milliseconds(500), scheduler: RunLoop.current) // Debounce for 500ms
             .removeDuplicates() // Avoid triggering fetch for the same value
             .sink { [weak self] keyword in
+                print(keyword)
                 guard let self else { return }
                 self.dataSource.keyword = keyword.isEmpty ? nil : keyword
                 self.fetchData()

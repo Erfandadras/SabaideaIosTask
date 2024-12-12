@@ -27,6 +27,7 @@ final class MovieDetailDataSource: MovieDetailDataSourceRepo {
     }
 }
 
+// MARK: - fetch data
 extension MovieDetailDataSource {
     func fetchData() async throws -> MovieDetailUIModel {
         let setup = createNetworkSetup()
@@ -36,6 +37,7 @@ extension MovieDetailDataSource {
     }
 }
 
+// MARK: - create request setup
 private extension MovieDetailDataSource {
     func createNetworkSetup() -> NetworkSetup {
         let params = [
@@ -50,6 +52,6 @@ private extension MovieDetailDataSource {
     }
     
     private func createHeader() -> [String: String] {
-        return ["authorization": "Bearer \(API.token)"]
+        return ["authorization": "Bearer \(userManager.token ?? "")"]
     }
 }

@@ -24,7 +24,11 @@ struct MovieListItemView: View {
                 Text(data.title)
                     .font(.system(size: 16))
                     .fontWeight(.semibold)
+                    .lineLimit(2)
+                    .minimumScaleFactor(0.7)
                     .leading()
+                    .frame(maxWidth: .infinity)
+                
                 Spacer()
                 Text(data.date)
                     .font(.system(size: 14))

@@ -30,9 +30,10 @@ final class UserManager: NSObject {
         }
     }
     
+    //TODO: - with using login and signup remove default token
     var token: String? {
         get {
-            return manager[#function]
+            return manager[#function] ?? API.token
         }
         set {
             manager[#function] = newValue
@@ -45,7 +46,7 @@ final class UserManager: NSObject {
     }
     
     var language: String {
-        get { manager[#function] ?? "fa" }
+        get { manager[#function] ?? "en_US" }
         set { manager[#function] = newValue}
     }
     

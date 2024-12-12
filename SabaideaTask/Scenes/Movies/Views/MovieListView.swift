@@ -41,7 +41,7 @@ struct MovieListView: View {
                     LazyVStack {
                         ForEach(viewModel.uiModels) { item in
                             NavigationLink {
-                                NavigationLazyView(MovieDetailView(previewItem: item))
+                                MovieDetailView(previewItem: item)
                             } label: {
                                 MovieListItemView(data: item)
                                     .background(.white)
@@ -51,18 +51,18 @@ struct MovieListView: View {
                         }
                     }
                 }// scrollView
+                .scrollDismissesKeyboard(.automatic)
                 .refreshable {
                     viewModel.fetchData(refresh: true)
                 }
                 .navigationTitle("Home")
                 .navigationBarTitleDisplayMode(.automatic)
                 .background(.white)
+                .animation(.linear, value: focused)
             }
         }// navigation view
         .searchable(text: $viewModel.keyword, placement: .navigationBarDrawer, prompt: Text("Search"))
+        .focused($focused)
         .background(.white)
-        .onTapGesture {
-            hideKeyboard()
-        }
     }
 }

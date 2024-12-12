@@ -22,20 +22,16 @@ final class MovieDetailViewModel: BaseViewModel {
     }
     
     func fetchData() {
-        mainThread {
-            self.state = .loading
-        }
+        self.updateState(state: .loading)
         Task {
             do {
                 let data = try await dataSource.fetchData()
+                self.updateState(state: .success)
                 mainThread {
-                    self.state = .success
                     self.uiModel = data
                 }
             } catch {
-                mainThread {
-                    self.state = .failure(error: error)
-                }
+                self.updateState(state: .failure(error: error))
             }
         }
     }

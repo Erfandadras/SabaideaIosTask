@@ -15,7 +15,7 @@ public struct ImageViewBuilder: View {
     
     public var body: some View {
         WebImage(url: url) { image in
-            image.resizable(resizingMode: .stretch)
+            image
         } placeholder: {
             placeholder
                 .resizable()

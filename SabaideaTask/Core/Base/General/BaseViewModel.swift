@@ -6,6 +6,7 @@
 //
 
 import Combine
+import SwiftUI
 
 enum ViewModelState: Equatable {
     static func == (lhs: ViewModelState, rhs: ViewModelState) -> Bool {
@@ -29,9 +30,16 @@ protocol BaseViewModelProtocol {}
 
 class BaseViewModel: BaseViewModelProtocol, ObservableObject {
     // MARK: - properties
-    @Published var state: ViewModelState = .loading
+    @Published private(set) var state: ViewModelState?
     var bag: Set<AnyCancellable> = []
     
+    func updateState(state: ViewModelState) {
+        mainThread {
+            withAnimation {
+                self.state = state
+            }
+        }
+    }
 }
 
 extension BaseViewModel: ErrorDataSourceDelegate {

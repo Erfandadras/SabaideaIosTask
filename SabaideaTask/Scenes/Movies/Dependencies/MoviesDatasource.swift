@@ -88,6 +88,6 @@ private extension MoviesDatasource {
           ]
     }
     private func createHeader() -> [String: String] {
-        return ["authorization": "Bearer \(API.token)"]
+        return ["authorization": "Bearer \(userManager.token ?? "")"]
     }
 }
