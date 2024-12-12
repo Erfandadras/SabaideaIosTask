@@ -8,63 +8,83 @@ import Foundation
 
 protocol MoviesDatasourceRepo: BaseDataSource {
     func fetchData() async throws -> [MoviesUIModel]
+    var keyword: String? {get set}
 }
 
 final class MoviesDatasource: MoviesDatasourceRepo {
     // MARK: - properties
     private var page: Int = 1
-    private var nextPage: Int = 1
     private var uiModels: [MoviesUIModel] = []
-    let netwoek: NetworkClientImpl<MoviesNetworkClient>
-    
+    private var result: PaginateMoviesResponseModel?
+    private var language: String = "en-US"
+    var keyword: String?
+    let network: NetworkClientImpl<MoviesNetworkClient>
     // MARK: - init
-    init(netwoek: NetworkClientImpl<MoviesNetworkClient>) {
-        self.netwoek = netwoek
+    init(network: NetworkClientImpl<MoviesNetworkClient>) {
+        self.network = network
     }
 }
 
+// MARK: - request logic
 extension MoviesDatasource {
     func fetchData() async throws -> [MoviesUIModel] {
-        let setup = createNetwoekSetup(for: nextPage)
+        self.page = 1
         
-        let data = try await netwoek.fetch(setup: .init(route: ""))
-        self.page = data.page ?? self.page
-        
-        if data.hasMoreData {
-            self.nextPage = page + 1
-        }
+        let setup = createNetworkSetup(for: page)
+        let data = try await network.fetch(setup: setup)
+        self.result = data
         self.uiModels = data.results.map({.init(with: $0)})
         return uiModels
     }
     
-    func refreshData() async throws -> [MoviesUIModel] {
-        let setup = createNetwoekSetup(for: page)
-        
-        let data = try await netwoek.fetch(setup: .init(route: ""))
-        self.page = data.page ?? self.page
-        
-        if data.hasMoreData {
-            self.nextPage = page + 1
+    func loadMoreData() async throws -> [MoviesUIModel] {
+        guard let result else { return []}
+        let page: Int
+        if let currentPage = result.page, result.hasMoreData {
+            page = currentPage + 1
+        } else {
+            return []
         }
-        self.uiModels = data.results.map({.init(with: $0)})
+        
+        let setup = createNetworkSetup(for: page)
+        let data = try await network.fetch(setup: setup)
+        self.page = data.page ?? self.page
+        let uiModels: [MoviesUIModel] = data.results.map({.init(with: $0)})
+        self.uiModels += uiModels
         return uiModels
     }
 }
 
 // MARK: - private logic
 private extension MoviesDatasource {
-    func createNetwoekSetup(for page: Int = 1, language: String = "en-US") -> NetworkSetup {
-        let params = [
-          "include_adult": "false",
-          "include_video": "false",
-          "language": language,
-          "page": "\(page)",
-          "sort_by": "popularity.desc",
-        ]
-        let headers = createHeader()
-        return .init(route: API.Routes.movieList, params: params, method: .get, headers: headers)
+    func createNetworkSetup(for page: Int = 1) -> NetworkSetup {
+        if let keyword { // create setup for search movie list
+            return createSearchNetworkSetup(for: page, keyword: keyword)
+        } else { // create setup for normal movie list
+            var params = createDefaultParams(for: page)
+            params.updateValue("popularity.desc", forKey: "sort_by")
+            params.updateValue("false", forKey: "include_video")
+            
+            let headers = createHeader()
+            return .init(route: API.Routes.movieList, params: params, method: .get, headers: headers)
+        }
     }
     
+    func createSearchNetworkSetup(for page: Int = 1, keyword: String) -> NetworkSetup {
+        var params = createDefaultParams(for: page)
+        params.updateValue(keyword, forKey: "query")
+        let headers = createHeader()
+        return .init(route: API.Routes.search, params: params, method: .get, headers: headers)
+    }
+    
+    func createDefaultParams(for page: Int) -> [String: String] {
+        return [
+            "include_adult": "false",
+            "include_video": "false",
+            "language": language,
+            "page": "\(page)",
+          ]
+    }
     private func createHeader() -> [String: String] {
         return ["authorization": "Bearer \(API.token)"]
     }

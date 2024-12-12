@@ -39,31 +39,15 @@ extension NetworkClient {
         }
         
         if response.statusCode == 200 {
-            var errorMessage: String = ""
-            
+#if DEBUG
+            return try result.decode()
+#else
             do {
-                let result = try JSONDecoder().decode(T.self, from: result)
-                return result
-            } catch let DecodingError.dataCorrupted(context) {
-                errorMessage = "\(context)"
-
-            } catch let DecodingError.keyNotFound(key, context) {
-                errorMessage = "Key '\(key)' not found: " + context.debugDescription
-                errorMessage += "\n codingPath: \(context.codingPath)"
-                
-            } catch let DecodingError.valueNotFound(value, context) {
-                errorMessage = "value '\(value)' not found: " + context.debugDescription
-                errorMessage += "\n codingPath: \(context.codingPath)"
-
-            } catch let DecodingError.typeMismatch(type, context)  {
-                errorMessage = "Type '\(type)' mismatch: " + context.debugDescription
-                errorMessage += "\n codingPath: \(context.codingPath)"
-
+                return try result.decode()
             } catch {
-                errorMessage = error.localizedDescription
-                
+                throw CustomError(description: "Failed to decode data")
             }
-            throw CustomError(description: errorMessage)
+#endif
         } else {
             throw CustomError(description: "error code \(response.statusCode)")
         }

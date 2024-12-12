@@ -1,5 +1,5 @@
 //
-//  MoveListItemView.swift
+//  MovieListItemView.swift
 //  SabaideaTask
 //
 //  Created by Erfan mac mini on 12/12/24.
@@ -9,7 +9,7 @@
 import SwiftUI
 import SDWebImageSwiftUI
 
-struct MoveListItemView: View {
+struct MovieListItemView: View {
     let data: MoviesUIModel
     
     var body: some View {
@@ -43,5 +43,5 @@ struct MoveListItemView: View {
 }
 
 #Preview {
-    MoveListItemView(data: MockData.moveItemUIModel)
+    MovieListItemView(data: MockData.moveItemUIModel)
 }
