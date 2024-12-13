@@ -6,18 +6,20 @@
 //
 import Foundation
 
-protocol MoviesDatasourceRepo: BaseDataSource {
+protocol MoviesDatasourceRepo: AnyObject, BaseDataSource {
     func fetchData() async throws -> [MoviesUIModel]
     var keyword: String? {get set}
+    var page: Int { get }
+    var language: String { get }
 }
 
 final class MoviesDatasource: MoviesDatasourceRepo {
     // MARK: - properties
-    private var page: Int = 1
+    private(set) var page: Int = 1
     private var uiModels: [MoviesUIModel] = []
     private var result: PaginateMoviesResponseModel?
     private let userManager = UserManager.shared
-    private var language: String
+    private(set) var language: String
     var keyword: String?
     let network: NetworkClientImpl<MoviesNetworkClient>
     // MARK: - init

@@ -20,7 +20,8 @@ struct MovieListView: View {
 #else
         client = .init(client: MoviesNetworkClient())
 #endif
-        self._viewModel = .init(wrappedValue: MovieViewModel(dataSource: .init(network: client)))
+        let dataSource = MoviesDatasource(network: client)
+        self._viewModel = .init(wrappedValue: MovieViewModel(dataSource: dataSource))
     }
     // MARK: - view
     var body: some View {

@@ -11,12 +11,12 @@ import UIKit
 
 final class MovieViewModel: BaseViewModel {
     // MARK: - properties
-    private let dataSource: MoviesDatasource
+    private let dataSource: MoviesDatasourceRepo
     @Published var uiModels: [MoviesUIModel] = []
     @Published var keyword: String = ""
     
     // MARK: - init
-    init(dataSource: MoviesDatasource) {
+    init(dataSource: MoviesDatasourceRepo) {
         self.dataSource = dataSource
         super.init()
         fetchData()
@@ -48,7 +48,7 @@ final class MovieViewModel: BaseViewModel {
 extension MovieViewModel{
     private func bindSearchText() {
         $keyword
-            .debounce(for: .milliseconds(500), scheduler: RunLoop.current) // Debounce for 500ms
+            .debounce(for: .milliseconds(500), scheduler: RunLoop.main) // Debounce for 500ms
             .removeDuplicates() // Avoid triggering fetch for the same value
             .sink { [weak self] keyword in
                 print(keyword)
